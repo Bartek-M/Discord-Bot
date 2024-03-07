@@ -1,7 +1,16 @@
 # Discord Bot
 My first **Discord** bot created in 2019 using **Python** with **discord.py**. It has a lot of functionality. Since **discord.py** is deprecated, I switched to **discord.js**. New bot [N4NO](https://top.gg/bot/804625036005736489) is far better then this one, however I would prefer not to share it's source code. 
 
-This project is **deprecated** and may not work properly. **Newest** version is [N4NO](https://top.gg/bot/804625036005736489) built with **discord.js**.
+> NOTE: This project is **deprecated** and may not work properly. **Newest** version is [N4NO](https://top.gg/bot/804625036005736489) built with **discord.js**.
+
+## Modules
+- admin
+- help
+- music
+- reactions
+- school
+- secret
+- utility
 
 ## Requirements
 - Python 3.8 or above
