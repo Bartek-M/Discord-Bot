@@ -1,11 +1,13 @@
-import discord
+import os
 import asyncio
-
-from discord.ext import commands
-from discord.ext.commands import BucketType
 from datetime import datetime
 
+import discord
+from discord.ext import commands
+from discord.ext.commands import BucketType
+
 from . import config
+NAME = os.getenv("NAME", "BOT")
 
 
 class Admin(commands.Cog):
@@ -511,7 +513,7 @@ class Admin(commands.Cog):
                     await asyncio.create_task(
                         self.config.prnt(
                             ctx,
-                            f"[{(await self.config.get_time())}] {self.config.getNAME(ctx, 'Blocking')} blocked {member} from using bAI",
+                            f"[{(await self.config.get_time())}] {self.config.getNAME(ctx, 'Blocking')} blocked {member} from using {NAME}",
                         )
                     )
                 else:

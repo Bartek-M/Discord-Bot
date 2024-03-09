@@ -7,6 +7,7 @@ load_dotenv()
 from src import client, config
 
 TOKEN = os.getenv("TOKEN")
+NAME = os.getenv("NAME", "BOT")
 START = True
 
 if not TOKEN:
@@ -28,14 +29,14 @@ async def on_ready():
                 await client.load_extension(f"src.{filename[:-3]}")
             except Exception as e:
                 print(
-                    f"[{(await config.get_time())}] [bAI] couldn't load `{filename}` | Error code: {e}"
+                    f"[{(await config.get_time())}] [{NAME}] couldn't load `{filename}` | Error code: {e}"
                 )
 
         START = False
 
     on_time = await config.get_time()
     print(
-        f"[{on_time}] [bAI] bot is ready | Servers = {len(client.guilds)} | User = {client.user}"
+        f"[{on_time}] [{NAME}] bot is ready | Servers = {len(client.guilds)} | User = {client.user}"
     )
 
 

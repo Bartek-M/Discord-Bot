@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 
 import discord
@@ -5,6 +6,8 @@ from discord.ext import commands
 
 from . import config
 from utils.config import get_prefix
+
+NAME = os.getenv("NAME", "BOT")
 
 
 class Help(commands.Cog):
@@ -72,8 +75,8 @@ class Help(commands.Cog):
             )
 
         elif str(command).lower() == "music":
-            desc = f"`{prfx}join`\nbAI joins vc [{prfx}j]\n\n"
-            desc += f"`{prfx}leave`\nbAI leaves vc [{prfx}l]\n\n"
+            desc = f"`{prfx}join`\Bot joins vc [{prfx}j]\n\n"
+            desc += f"`{prfx}leave`\nBot leaves vc [{prfx}l]\n\n"
 
             desc += f"`{prfx}play [song]`\nPlays song or adds it to queue [{prfx}p]\n\n"
             desc += f"`{prfx}stop`\nStops player and leaves vc[{prfx}st]\n\n"
@@ -151,15 +154,15 @@ class Help(commands.Cog):
             )
 
         elif str(command).lower() == "info":
-            desc = "`1` Move up bAI role to get every command to work\n\n`2` Every bAI setting is saving to config file\n\n`3` There are some limits, so don't exceed them\n\n`4` Errors doesn't crush bAI\n\n`5` Things in [] help command are an important parameter\n\n`6` Things in () help command aren't an important parameter\n\n`7` Mention bAI to see info card\n\n`8` Every command has permissions\n\n`9` bAI is case insensitive\n\n`10` If you've got some problems, use support command\n\n`11` Default prefix is `bAI.` and `.`, you can change only second one"
+            desc = f"`1` Move up {NAME} role to get every command to work\n\n`2` Every {NAME} setting is saving to config file\n\n`3` There are some limits, so don't exceed them\n\n`4` Errors doesn't crush {NAME}\n\n`5` Things in [] help command are an important parameter\n\n`6` Things in () help command aren't an important parameter\n\n`7` Mention {NAME} to see info card\n\n`8` Every command has permissions\n\n`9` {NAME} is case insensitive\n\n`10` If you've got some problems, use support command\n\n`11` Default prefix is `{NAME}.` and `.`, you can change only second one"
             embed = discord.Embed(
-                title="**Useful info about bAI**",
+                title=f"**Useful info about {NAME}**",
                 description=desc,
                 colour=discord.Color.dark_blue(),
             )
 
         else:
-            url = f"[**Add bot to your server**](https://discord.com/api/oauth2/authorize?client_id={self.client.user.id}&permissions=8&scope=bot)"
+            url = f"[**Add bot to your server**](https://discord.com/api/oauth2/authorize?client_id={self.client.user.id}&permissions=8&scope=applications.commands%20bot)"
 
             embed = discord.Embed(
                 description=url,
@@ -167,7 +170,7 @@ class Help(commands.Cog):
                 timestamp=datetime.utcnow(),
             )
             embed.set_author(
-                name="bAI Commands Help",
+                name=f"{NAME} Commands Help",
                 icon_url=self.bot_pic,
             )
 

@@ -1,12 +1,15 @@
-import discord
-import asyncio
+import os
 import random
+import asyncio
 
+import discord
 from discord.utils import get
 from discord.ext import commands
 
 from . import config
 from utils.config import get_prefix
+
+NAME = os.getenv("NAME", "BOT")
 
 
 class Events(commands.Cog):
@@ -18,7 +21,7 @@ class Events(commands.Cog):
         self.xyz1 = ""
         self.brb_nick = []
         self.h = ["Hello", "Hi", "Hello, how can I help you?"]
-        self.bai_pic = self.client.user.avatar
+        self.bot_avatar = self.client.user.avatar
 
     # Bot events
     @commands.Cog.listener()
@@ -132,7 +135,7 @@ class Events(commands.Cog):
             if channel.permissions_for(guild.me).send_messages:
                 await channel.send("Hey there!")
 
-                desc = f"[**Add bot to your server**](https://discord.com/api/oauth2/authorize?client_id={self.client.user.id}&permissions=8&scope=bot)\n\n"
+                desc = f"[**Add bot to your server**](https://discord.com/api/oauth2/authorize?client_id={self.client.user.id}&permissions=8&scope=applications.commands%20bot)\n\n"
 
                 desc += f"**My prefix:** `.`\n\n"
                 desc += f"**If you need some help, type** `.help`\n\n"
@@ -142,11 +145,11 @@ class Events(commands.Cog):
                     description=desc, colour=discord.Color.dark_blue()
                 )
                 embed.set_author(
-                    name="Hello, I'm bAI",
-                    icon_url=self.bai_pic,
+                    name=f"Hello, I'm {NAME}",
+                    icon_url=self.bot_avatar,
                 )
 
-                embed.set_thumbnail(url=self.bai_pic)
+                embed.set_thumbnail(url=self.bot_avatar)
                 await channel.send(embed=embed)
 
                 break
@@ -162,7 +165,7 @@ class Events(commands.Cog):
         await asyncio.create_task(
             self.config.prnt(
                 None,
-                f"[{(await self.config.get_time())}] [bAI] Added to {guild.name} ({guild.id})",
+                f"[{(await self.config.get_time())}] [{NAME}] Added to {guild.name} ({guild.id})",
                 False,
             )
         )
@@ -177,7 +180,7 @@ class Events(commands.Cog):
         await asyncio.create_task(
             self.config.prnt(
                 None,
-                f"[{(await self.config.get_time())}] [bAI] Removed from {guild.name} ({guild.id})",
+                f"[{(await self.config.get_time())}] [{NAME}] Removed from {guild.name} ({guild.id})",
                 False,
             )
         )
@@ -382,7 +385,7 @@ class Events(commands.Cog):
                             str(msg.content.strip()) == f"<@!{self.client.user.id}>"
                             or str(msg.content.strip()) == f"<@{self.client.user.id}>"
                         ):
-                            desc = f"[**Add bot to your server**](https://discord.com/api/oauth2/authorize?client_id={self.client.user.id}&permissions=8&scope=bot)\n\n"
+                            desc = f"[**Add bot to your server**](https://discord.com/api/oauth2/authorize?client_id={self.client.user.id}&permissions=8&scope=applications.commands%20bot)\n\n"
 
                             desc += (
                                 f"**My prefix:** `{(get_prefix(self.client, msg))}`\n\n"
@@ -396,9 +399,9 @@ class Events(commands.Cog):
                                 description=desc, colour=discord.Color.dark_blue()
                             )
                             embed.set_author(
-                                name="Hello, I'm bAI", icon_url=self.bai_pic
+                                name=f"Hello, I'm {NAME}", icon_url=self.bot_avatar
                             )
-                            embed.set_thumbnail(url=self.bai_pic)
+                            embed.set_thumbnail(url=self.bot_avatar)
 
                             await msg.channel.send(embed=embed)
 
