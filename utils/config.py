@@ -4,82 +4,96 @@ import secrets
 from datetime import datetime
 
 PREFIX = os.getenv("PREFIX", "-")
+CONFIG = os.getenv("CONFIG", "./config.json")
 
 
 class Config:
+    commands_signs = [
+        "Config",
+        "Auto Role",
+        "Audio",
+        "Blocking",
+        "Voice",
+        "Test Management",
+        "Homework Management",
+        "Nick Change",
+        "Roles",
+        "Get Out",
+        "Clear",
+    ]
+
+    default_config = {
+        "servers": [],
+        "dm": [],
+        "valid_users": [],
+        "blkd": [],
+        "blkdSrv": [],
+        "msgs": [],
+        "settings_servers": [],
+        "settings_dm": []
+    }
+
+    category = {
+        "name": "",
+        "secret_code": "",
+        "Tests": [],
+        "Homeworks": [],
+        "Prefix": PREFIX,
+        "LogChannel": "",
+        "DJ": "False",
+        "Reactions": {},
+        "check_list": {},
+        "welcomeMsg": [],
+        "forwarding": "",
+    }
+    categoryDM = {
+        "name": "",
+        "secret_code": "",
+        "Tests": [],
+        "Homeworks": [],
+        "Prefix": PREFIX,
+        "forwarding": "",
+    }
+
+    config = ""
+    servers = ""
+    dm = ""
+    settings = ""
+    dm_settings = ""
+    valid_users = ""
+    blocked = ""
+    blocked_server = ""
+
     def __init__(self, client):
         self.client = client
         self.on_check = []
 
-        self.commands_signs = [
-            "Config",
-            "Auto Role",
-            "Audio",
-            "Blocking",
-            "Voice",
-            "Test Management",
-            "Homework Management",
-            "Nick Change",
-            "Roles",
-            "Get Out",
-            "Clear",
-        ]
-
-        self.file = ""
-        self.config = ""
-        self.servers = ""
-        self.dm = ""
-        self.settings = ""
-        self.dm_settings = ""
-        self.valid_users = ""
-        self.blocked = ""
-        self.blocked_server = ""
-
-        self.category = {
-            "name": "",
-            "secret_code": "",
-            "Tests": [],
-            "Homeworks": [],
-            "Prefix": PREFIX,
-            "LogChannel": "",
-            "DJ": "False",
-            "Reactions": {},
-            "check_list": {},
-            "welcomeMsg": [],
-            "forwarding": "",
-        }
-        self.categoryDM = {
-            "name": "",
-            "secret_code": "",
-            "Tests": [],
-            "Homeworks": [],
-            "Prefix": PREFIX,
-            "forwarding": "",
-        }
         self.open_config()
 
     def open_config(self):
-        self.file = open("utils/config.json", "r+")
-        self.config = json.load(self.file)
+        try:
+            with open(CONFIG, "r") as f:
+                self.config = json.load(f)
+        except FileNotFoundError:
+            self.config = self.default_config
+            return self.save()
 
-        self.servers = self.config["servers"]
-        self.dm = self.config["dm"]
-        self.valid_users = self.config["valid_users"]
-        self.blocked = self.config["blkd"]
-        self.blocked_server = self.config["blkdSrv"]
-        self.settings = self.config["settings_servers"]
-        self.dm_settings = self.config["settings_dm"]
+        self.servers = self.config.get("servers")
+        self.dm = self.config.get("dm")
+        self.valid_users = self.config.get("valid_users")
+        self.blocked = self.config.get("blkd")
+        self.blocked_server = self.config.get("blkdSrv")
+        self.settings = self.config.get("settings_servers")
+        self.dm_settings = self.config.get("settings_dm")
 
     def get_server(self, id, test="False"):
-        self.open_config()
-
         try:
             if "DM" in str(id):
-                spcificSrvr = self.dm.index(str(id))
-                spcificSrvr = self.dm_settings[int(spcificSrvr)]
+                server = self.dm.index(str(id))
+                server = self.dm_settings[int(server)]
             else:
-                spcificSrvr = self.servers.index(str(id))
-                spcificSrvr = self.settings[int(spcificSrvr)]
+                server = self.servers.index(str(id))
+                server = self.settings[int(server)]
         except:
             if "DM" in str(id):
                 new_category = self.categoryDM
@@ -101,27 +115,23 @@ class Config:
             self.save()
 
         if "DM" in str(id):
-            spcificSrvr = self.dm.index(str(id))
-            spcificSrvr = self.dm_settings[int(spcificSrvr)]
+            server = self.dm.index(str(id))
+            server = self.dm_settings[int(server)]
         else:
-            spcificSrvr = self.servers.index(str(id))
-            spcificSrvr = self.settings[int(spcificSrvr)]
+            server = self.servers.index(str(id))
+            server = self.settings[int(server)]
 
-        forw = str(spcificSrvr["forwarding"])
+        forw = str(server["forwarding"])
 
         if forw != "" and test == "False":
-            spcificSrvr = self.servers.index(str(forw))
-            spcificSrvr = self.settings[int(spcificSrvr)]
+            server = self.servers.index(str(forw))
+            server = self.settings[int(server)]
 
-        return spcificSrvr
+        return server
 
     def save(self):
-        self.file.seek(0)
-
-        json.dump(self.config, self.file, indent=1)
-
-        self.file.truncate()
-        self.file.close()
+        with open(CONFIG, "w", encoding="UTF-8") as f:
+            json.dump(self.config, f, indent=2)
 
         self.open_config()
 

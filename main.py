@@ -3,9 +3,8 @@ import os
 from discord.ext.commands import CommandNotFound
 from dotenv import load_dotenv
 
-from src import client, config
-
 load_dotenv()
+from src import client, config
 
 TOKEN = os.getenv("TOKEN")
 START = True
