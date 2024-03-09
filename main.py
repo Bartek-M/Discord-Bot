@@ -4,7 +4,7 @@ from discord.ext.commands import CommandNotFound
 from dotenv import load_dotenv
 
 load_dotenv()
-from src import client, config
+from code import client, config
 
 TOKEN = os.getenv("TOKEN")
 NAME = os.getenv("NAME", "BOT")
