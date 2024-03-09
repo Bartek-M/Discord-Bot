@@ -1,4 +1,5 @@
 beautifulsoup4==4.11.1
 discord.py==2.3.2
+metar==1.9.0
 python-dotenv==1.0.1
 yt-dlp==2023.12.30

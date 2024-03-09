@@ -1,13 +1,16 @@
-import discord
-import asyncio
 import os
+import asyncio
+from datetime import datetime
+
+import discord
 from discord.ext import commands
 from discord.ext.commands.errors import CommandNotFound
-from datetime import datetime
+
+from . import config
 
 
 class Secret(commands.Cog):
-    def __init__(self, client, config):
+    def __init__(self, client):
         self.client = client
         self.config = config
 
@@ -98,7 +101,7 @@ class Secret(commands.Cog):
                             colour=discord.Color.dark_blue(),
                             timestamp=datetime.utcnow(),
                         ).set_footer(
-                            icon_url=ctx.author.avatar_url, text=f"Done by {ctx.author}"
+                            icon_url=ctx.author.avatar, text=f"Done by {ctx.author}"
                         )
                     )
                     await asyncio.create_task(
@@ -120,7 +123,7 @@ class Secret(commands.Cog):
                         colour=discord.Color.dark_blue(),
                         timestamp=datetime.utcnow(),
                     ).set_footer(
-                        icon_url=ctx.author.avatar_url, text=f"Done by {ctx.author}"
+                        icon_url=ctx.author.avatar, text=f"Done by {ctx.author}"
                     )
                 )
                 await asyncio.create_task(
@@ -160,7 +163,7 @@ class Secret(commands.Cog):
                         colour=discord.Color.dark_blue(),
                         timestamp=datetime.utcnow(),
                     ).set_footer(
-                        icon_url=ctx.author.avatar_url, text=f"Done by {ctx.author}"
+                        icon_url=ctx.author.avatar, text=f"Done by {ctx.author}"
                     )
                 )
                 await asyncio.create_task(
@@ -180,7 +183,7 @@ class Secret(commands.Cog):
                         colour=discord.Color.dark_blue(),
                         timestamp=datetime.utcnow(),
                     ).set_footer(
-                        icon_url=ctx.author.avatar_url, text=f"Done by {ctx.author}"
+                        icon_url=ctx.author.avatar, text=f"Done by {ctx.author}"
                     )
                 )
                 await asyncio.create_task(
@@ -235,6 +238,5 @@ class Secret(commands.Cog):
         self.config.on_check = []
 
 
-# Setting up the cog
-def setup(client, config):
-    client.add_cog(Secret(client, config))
+async def setup(client):
+    await client.add_cog(Secret(client))

@@ -1,49 +1,39 @@
 import os
-import asyncio
-from datetime import datetime
 
-import discord
-from discord.ext import commands
-from discord.ext.commands.errors import CommandNotFound
+from discord.ext.commands import CommandNotFound
 from dotenv import load_dotenv
 
-from ext.config import Config
-from ext.config import get_prefix
-
-intents = discord.Intents().all()
+from src import client, config
 
 load_dotenv()
+
 TOKEN = os.getenv("TOKEN")
+START = True
 
 if not TOKEN:
     raise "Please provide a TOKEN"
 
-client = commands.Bot(command_prefix=get_prefix, intents=intents, case_insensitive=True)
-client.remove_command("help")
-
-config = Config(client)
-first = True
-
 
 @client.event
 async def on_ready():
-    global first
+    global START
 
-    if first:
+    if START:
         os.system("cls")
 
-        for filename in os.listdir("./cogs"):
-            if not filename.endswith(".py"):
+        for filename in os.listdir("./src"):
+            if not filename.endswith(".py") or filename.startswith("__"):
                 continue
 
             try:
-                await client.load_extension(f"cogs.{filename[:-3]}")
+                await client.load_extension(f"src.{filename[:-3]}")
             except Exception as e:
                 print(
                     f"[{(await config.get_time())}] [bAI] couldn't load `{filename}` | Error code: {e}"
                 )
-        first = False
-    # await client.change_presence(activity=discord.Game("discord.py => discord.js"))
+
+        START = False
+
     on_time = await config.get_time()
     print(
         f"[{on_time}] [bAI] bot is ready | Servers = {len(client.guilds)} | User = {client.user}"
@@ -55,10 +45,9 @@ async def on_command_error(msg, error):
     if await config.blockCheck(msg):
         return
 
-    if isinstance(error, commands.CommandNotFound):
+    if isinstance(error, CommandNotFound):
         pass
 
 
-# Run Bot
 if __name__ == "__main__":
     client.run(TOKEN)

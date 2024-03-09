@@ -6,13 +6,24 @@ from datetime import datetime
 PREFIX = os.getenv("PREFIX", "-")
 
 
-class Config():
-    def __init__(self, client):      
+class Config:
+    def __init__(self, client):
         self.client = client
-
         self.on_check = []
 
-        self.commands_signs = ["Config", "Auto Role", "Audio", "Blocking", "Voice", "Test Management", "Homework Management", "Nick Change", "Roles", "Get Out", "Clear"]
+        self.commands_signs = [
+            "Config",
+            "Auto Role",
+            "Audio",
+            "Blocking",
+            "Voice",
+            "Test Management",
+            "Homework Management",
+            "Nick Change",
+            "Roles",
+            "Get Out",
+            "Clear",
+        ]
 
         self.file = ""
         self.config = ""
@@ -35,7 +46,7 @@ class Config():
             "Reactions": {},
             "check_list": {},
             "welcomeMsg": [],
-            "forwarding": ""
+            "forwarding": "",
         }
         self.categoryDM = {
             "name": "",
@@ -47,9 +58,8 @@ class Config():
         }
         self.open_config()
 
-    # Open config file
     def open_config(self):
-        self.file = open("ext/config.json", "r+")
+        self.file = open("utils/config.json", "r+")
         self.config = json.load(self.file)
 
         self.servers = self.config["servers"]
@@ -60,8 +70,7 @@ class Config():
         self.settings = self.config["settings_servers"]
         self.dm_settings = self.config["settings_dm"]
 
-    # Get self.settings from specific server
-    def specifSRVR(self, id, test="False"):
+    def get_server(self, id, test="False"):
         self.open_config()
 
         try:
@@ -88,7 +97,7 @@ class Config():
                 new_category["name"] = str(id)
                 new_category["secret_code"] = self.gen_sc()
                 self.settings.append(new_category)
-            
+
             self.save()
 
         if "DM" in str(id):
@@ -106,7 +115,6 @@ class Config():
 
         return spcificSrvr
 
-    # Save self.config self.file
     def save(self):
         self.file.seek(0)
 
@@ -117,7 +125,6 @@ class Config():
 
         self.open_config()
 
-    # Get server id or name
     def getID(self, ctx):
         try:
             id = str(ctx.guild.id)
@@ -140,26 +147,23 @@ class Config():
 
         return name
 
-    # Secret Code
     def gen_sc(self):
         return secrets.token_hex(8)
 
-    # Getting Date and Time
     async def get_time(self):
         now = datetime.utcnow()
         dt_string = now.strftime("%d/%m/%Y-%H:%M")
         return dt_string
 
-    # Logs
     async def prnt(self, ctx, content, public=True):
         print(str(content).replace("\n", ""))
 
         if public:
             id = self.getID(ctx)
-        
-            log = self.specifSRVR(str(id))
+
+            log = self.get_server(str(id))
             new_id = log["name"]
-            
+
             if "DM" not in new_id:
                 log = log["LogChannel"]
 
@@ -173,7 +177,6 @@ class Config():
                                     break
                             break
 
-    # Check if self.blocked
     async def blockCheck(self, ctx):
         self.open_config()
 
@@ -189,12 +192,15 @@ class Config():
         except:
             blockedSrv = "ProblemNONE"
 
-        if blockedUsr not in self.blocked and blockedSrv not in self.blocked_server and blockedUsr2 not in self.blocked:
+        if (
+            blockedUsr not in self.blocked
+            and blockedSrv not in self.blocked_server
+            and blockedUsr2 not in self.blocked
+        ):
             return False
         else:
             return True
 
-    # Check if current command is not working at the moment
     async def on_checkk(self, ctx, comd, state):
         if not ctx.author.bot:
             id = self.getID(ctx)
@@ -212,11 +218,12 @@ class Config():
         else:
             return False
 
+
 def get_prefix(client, message):
     config = Config(client)
 
     id = config.getID(message)
-    prefix = config.specifSRVR(str(id))
+    prefix = config.get_server(str(id))
     prefix = prefix["Prefix"]
 
     return prefix

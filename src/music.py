@@ -1,26 +1,25 @@
-# Importing Modules
-import discord
-import yt_dlp
-import asyncio
-import re
 import os
+import re
+import asyncio
 import requests
-from bs4 import BeautifulSoup
 from datetime import datetime
+
+import yt_dlp
+import discord
+from discord import FFmpegPCMAudio
 from discord.ext import commands, tasks
 from discord.utils import get
 from discord.ext.commands.errors import CommandNotFound
-from discord import FFmpegPCMAudio
-from ext.config import get_prefix
+from bs4 import BeautifulSoup
 
-# TODO: add spotify player and youtube live
+from . import config
+from utils.config import get_prefix
 
 
-# Music Class
 class Music(commands.Cog):
-    def __init__(self, client, config):
+    def __init__(self, client):
         self.client = client
-        self.config = config  # Config(client)
+        self.config = config
 
         self.regex = r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))"
 
@@ -62,7 +61,6 @@ class Music(commands.Cog):
 
         self.ydl = yt_dlp.YoutubeDL(self.YDL_OPTIONS)
 
-    # Create player object
     async def search(self, queue1, num):
         queue2 = queue1[num]
 
@@ -75,14 +73,13 @@ class Music(commands.Cog):
         stuff = ["Empty", URL, title, url, author, duration]
         return stuff
 
-    # Create play message
     async def playMsg(self, ctx, tag, title, url, author, duration):
         ending = url.replace("https://www.youtube.com/watch?v=", "")
         img = f"https://img.youtube.com/vi/{ending}/0.jpg"
 
         url = f"[{title}]({url}) | `{duration}`"
 
-        pfp = author.avatar_url
+        pfp = author.avatar
 
         id = self.config.getID(ctx)
         try:
@@ -150,7 +147,7 @@ class Music(commands.Cog):
     # Check if dj role is requaried
     async def dj_check(self, ctx):
         id = self.config.getID(ctx)
-        dj_ = self.config.specifSRVR(str(id))
+        dj_ = self.config.get_server(str(id))
 
         if dj_["DJ"] == "True":
             usr_roles = ctx.author.roles
@@ -204,7 +201,7 @@ class Music(commands.Cog):
                     colour=discord.Color.red(),
                     timestamp=datetime.utcnow(),
                 ).set_footer(
-                    icon_url=ctx.author.avatar_url, text=f"Created by {ctx.author}"
+                    icon_url=ctx.author.avatar, text=f"Created by {ctx.author}"
                 )
             )
 
@@ -255,7 +252,7 @@ class Music(commands.Cog):
                     colour=discord.Color.red(),
                     timestamp=datetime.utcnow(),
                 ).set_footer(
-                    icon_url=ctx.author.avatar_url, text=f"Created by {ctx.author}"
+                    icon_url=ctx.author.avatar, text=f"Created by {ctx.author}"
                 )
             )
 
@@ -481,7 +478,7 @@ class Music(commands.Cog):
                     colour=discord.Color.red(),
                     timestamp=datetime.utcnow(),
                 ).set_footer(
-                    icon_url=ctx.author.avatar_url, text=f"Created by {ctx.author}"
+                    icon_url=ctx.author.avatar, text=f"Created by {ctx.author}"
                 )
             )
 
@@ -550,7 +547,7 @@ class Music(commands.Cog):
                     colour=discord.Color.red(),
                     timestamp=datetime.utcnow(),
                 ).set_footer(
-                    icon_url=ctx.author.avatar_url, text=f"Created by {ctx.author}"
+                    icon_url=ctx.author.avatar, text=f"Created by {ctx.author}"
                 )
             )
 
@@ -611,7 +608,7 @@ class Music(commands.Cog):
                     colour=discord.Color.red(),
                     timestamp=datetime.utcnow(),
                 ).set_footer(
-                    icon_url=ctx.author.avatar_url, text=f"Created by {ctx.author}"
+                    icon_url=ctx.author.avatar, text=f"Created by {ctx.author}"
                 )
             )
 
@@ -671,7 +668,7 @@ class Music(commands.Cog):
                     colour=discord.Color.red(),
                     timestamp=datetime.utcnow(),
                 ).set_footer(
-                    icon_url=ctx.author.avatar_url, text=f"Created by {ctx.author}"
+                    icon_url=ctx.author.avatar, text=f"Created by {ctx.author}"
                 )
             )
 
@@ -728,7 +725,7 @@ class Music(commands.Cog):
                     colour=discord.Color.red(),
                     timestamp=datetime.utcnow(),
                 ).set_footer(
-                    icon_url=ctx.author.avatar_url, text=f"Created by {ctx.author}"
+                    icon_url=ctx.author.avatar, text=f"Created by {ctx.author}"
                 )
             )
 
@@ -828,7 +825,7 @@ class Music(commands.Cog):
                     colour=discord.Color.red(),
                     timestamp=datetime.utcnow(),
                 ).set_footer(
-                    icon_url=ctx.author.avatar_url, text=f"Created by {ctx.author}"
+                    icon_url=ctx.author.avatar, text=f"Created by {ctx.author}"
                 )
             )
 
@@ -908,7 +905,7 @@ class Music(commands.Cog):
                     colour=discord.Color.red(),
                     timestamp=datetime.utcnow(),
                 ).set_footer(
-                    icon_url=ctx.author.avatar_url, text=f"Created by {ctx.author}"
+                    icon_url=ctx.author.avatar, text=f"Created by {ctx.author}"
                 )
             )
 
@@ -982,7 +979,7 @@ class Music(commands.Cog):
                     colour=discord.Color.red(),
                     timestamp=datetime.utcnow(),
                 ).set_footer(
-                    icon_url=ctx.author.avatar_url, text=f"Created by {ctx.author}"
+                    icon_url=ctx.author.avatar, text=f"Created by {ctx.author}"
                 )
             )
 
@@ -1002,7 +999,7 @@ class Music(commands.Cog):
             or ctx.author.guild_permissions.administrator
         ):
             id = self.config.getID(ctx)
-            dj_ = self.config.specifSRVR(str(id))
+            dj_ = self.config.get_server(str(id))
             if dj_["DJ"] == "True":
                 dj_["DJ"] = "False"
                 self.config.save()
@@ -1041,7 +1038,7 @@ class Music(commands.Cog):
                     colour=discord.Color.red(),
                     timestamp=datetime.utcnow(),
                 ).set_footer(
-                    icon_url=ctx.author.avatar_url, text=f"Created by {ctx.author}"
+                    icon_url=ctx.author.avatar, text=f"Created by {ctx.author}"
                 )
             )
 
@@ -1182,6 +1179,5 @@ class Music(commands.Cog):
         self.config.on_check = []
 
 
-# Setting up the cog
-def setup(client, config):
-    client.add_cog(Music(client, config))
+async def setup(client):
+    await client.add_cog(Music(client))

@@ -1,17 +1,18 @@
-import discord
-from discord.ext import commands
 from datetime import datetime
 
-from ext.config import get_prefix
+import discord
+from discord.ext import commands
+
+from . import config
+from utils.config import get_prefix
 
 
-# Help Class
 class Help(commands.Cog):
-    def __init__(self, client, config):
+    def __init__(self, client):
         self.client = client
         self.config = config
 
-        self.bot_pic = self.client.user.avatar_url
+        self.bot_pic = self.client.user.avatar
 
     # Help message
     @commands.command(aliases=["h", "help"])
@@ -215,6 +216,5 @@ class Help(commands.Cog):
         self.config.on_check = []
 
 
-# Setting up the cog
-def setup(client, config):
-    client.add_cog(Help(client, config))
+async def setup(client):
+    await client.add_cog(Help(client))

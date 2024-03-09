@@ -5,20 +5,20 @@ import random
 from discord.utils import get
 from discord.ext import commands
 
-from ext.config import get_prefix, Config
+from . import config
+from utils.config import get_prefix
 
 
-# Events Class
 class Events(commands.Cog):
     def __init__(self, client):
         self.client = client
-        self.config = Config(client)
+        self.config = config
 
         self.listening = []
         self.xyz1 = ""
         self.brb_nick = []
         self.h = ["Hello", "Hi", "Hello, how can I help you?"]
-        self.bai_pic = self.client.user.avatar_url
+        self.bai_pic = self.client.user.avatar
 
     # Bot events
     @commands.Cog.listener()
@@ -26,7 +26,7 @@ class Events(commands.Cog):
         try:
             id = member.guild.id
 
-            wlcm = self.config.specifSRVR(str(id))
+            wlcm = self.config.get_server(str(id))
             wlcm = wlcm["welcomeMsg"]
 
             if len(wlcm) != 2:
@@ -59,7 +59,7 @@ class Events(commands.Cog):
 
         msgID = payload.message_id
 
-        spcificSrvr = self.config.specifSRVR(id)
+        spcificSrvr = self.config.get_server(id)
         autoRole = spcificSrvr["Reactions"]
 
         try:
@@ -98,7 +98,7 @@ class Events(commands.Cog):
         member = await guild.fetch_member(payload.user_id)
         msgID = payload.message_id
 
-        spcificSrvr = self.config.specifSRVR(id)
+        spcificSrvr = self.config.get_server(id)
         autoRole = spcificSrvr["Reactions"]
 
         try:
